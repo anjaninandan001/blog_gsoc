@@ -2,7 +2,7 @@
 title: "talk with mentor"
 author: "Anjani Nandan"
 date: "2026-05-12"
-categories: [news, code, analysis]
+categories: [update,quarto,pkgdown]
 image: "image.jpg"
 ---
 
@@ -10,4 +10,5 @@ I learned how to use quarto+netlify.
 
 ![](image.jpg)
 
-I integrate with github and website is hosted on the netlify. Quarto is a tool that converts the `.qmd` file into `html`. 
+I follow all the steps what mentor taught us about quarto. 
+Also i am exploring the codebase of mlr3oml. And learned about the pkgdown.So i will also use this into my package mlr3hf.
