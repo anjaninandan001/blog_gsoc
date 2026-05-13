@@ -29,4 +29,4 @@ jobs:
           netlify_site_id: ${{ secrets.NETLIFY_SITE_ID }}
           pat_github_pr: ${{ secrets.PAT_GITHUB_PR }}
           path: _site
-          netlify_url: bloggsoc.netlify.app
+          netlify_url: mlr3hf-blog.netlify.app
