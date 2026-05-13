@@ -7,7 +7,7 @@ categories: [gsoc]
 
 This is the first post in a Quarto blog. Welcome!
 
-![](gsoc selection.png)
+![](gsoc_selection.png)
 
 I am very thankful to my mentors, Toby and Sebastian, for giving me the opportunity to contribute to the R project for statistical computing.
 As my mentors are my teachers, they inspire me to continuously improve my skills through their guidance and support. By the end of this journey, I hope to contribute a well-designed and optimized package to the project.
