@@ -2,11 +2,12 @@
 title: "Welcome To My Blog"
 author: "Anjani Nadan"
 date: "2026-05-09"
-categories: [news]
+categories: [gsoc]
 ---
 
 This is the first post in a Quarto blog. Welcome!
 
-![](thumbnail.jpg)
+![](gsoc selection.png)
 
-Since this post doesn't specify an explicit `image`, the first image in the post will be used in the listing page of posts.
+I am very thankful to my mentors, Toby and Sebastian, for giving me the opportunity to contribute to the R project for statistical computing.
+As my mentors are my teachers, they inspire me to continuously improve my skills through their guidance and support. By the end of this journey, I hope to contribute a well-designed and optimized package to the project.
