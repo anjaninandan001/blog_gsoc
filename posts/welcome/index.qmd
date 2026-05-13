@@ -1,6 +1,6 @@
 ---
 title: "Welcome To My Blog"
-author: "Tristan O'Malley"
+author: "Anjani Nadan"
 date: "2026-05-09"
 categories: [news]
 ---

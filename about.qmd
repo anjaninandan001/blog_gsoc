@@ -1,19 +1,16 @@
 ---
 title: "About"
-image: profile.jpg
+image: profile.jpeg
 about:
   template: jolla
   links:
-    - icon: bluesky
-      text: Bluesky
-      href: https://bsky.app/
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/anjani-nandan-8567a2281/
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/anjaninandan001
 
 ---
 
-About this blog
+Hi I am Anjani Nandan. Currently contributing in R project for statistical computing. My role is to develop the package that efficiently download the dataset from hugging face and integrating with `mlr3` ecosystem.
