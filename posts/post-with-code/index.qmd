@@ -2,13 +2,14 @@
 title: "talk with mentor"
 author: "Anjani Nandan"
 date: "2026-05-12"
-categories: [update,quarto,pkgdown]
-image: "image.jpg"
+categories: [netlify,quarto,pkgdown]
 ---
 
-I learned how to use quarto+netlify.
 
-![](image.jpg)
+I learned how to use **Quarto** together with **Netlify** for building and deploying websites.
 
-I follow all the steps what mentor taught us about quarto. 
-Also i am exploring the codebase of mlr3oml. And learned about the pkgdown.So i will also use this into my package mlr3hf.
+I followed the setup steps and guidance provided by my mentors regarding Quarto workflows and project organization. This helped me better understand how documentation and technical blogs can be maintained efficiently.
+
+Alongside this, I have been exploring the codebase of `mlr3oml` to understand package structure and implementation details. I also learned about **pkgdown**, which is a useful tool for generating package documentation websites.
+
+Going forward, I plan to integrate `pkgdown` into my package **`mlr3hf`** to improve documentation quality and make the package more accessible for users.

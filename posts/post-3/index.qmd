@@ -1,0 +1,68 @@
+---
+title: "finalising design for mlr3hf"
+author: "Anjani Nandan"
+date: "2026-05-22"
+categories: [data.table,duckdb,revsion,parquet]
+
+---
+
+## Design of `mlr3hf`
+
+During the online meeting with our mentors,
+
+Toby and Sebastian, we discussed several design-related questions and clarified important implementation details. One of the major goals of the community period is not only technical learning, but also maintaining continuous communication with mentors. Through these discussions and their guidance, I was able to finalise the package architecture and refine the overall design direction of the project.
+After the discussion, the design direction for `mlr3hf` became significantly clearer.
+
+The proposed system will download datasets from Hugging Face and store them locally on disk. Once downloaded, data processing backends such as `data.table` or `DuckDB` will efficiently feed datasets into the `mlr3` ecosystem, where they will be converted into `Task` objects.
+
+Although this workflow appears straightforward at first glance, building a robust and user-friendly implementation introduces several engineering challenges.
+
+## Cache Management Challenge
+
+One of the major challenges is cache management.
+
+Hugging Face datasets are associated with revisions such as commit hashes and branches, and users may want to download datasets from specific revisions rather than always using the latest version.
+
+To address this, the current design explores Hugging Face's storage structure involving:
+
+- Snapshots
+- Blobs
+- Symbolic links (symlinks)
+
+This design aims to minimise duplication while improving storage efficiency.
+
+## Exploring Parquet Infrastructure
+
+Another area of investigation is Hugging Face's Parquet infrastructure.
+
+Hugging Face automatically converts many datasets into Parquet format through its Parquet conversion pipeline. This simplifies dataset access because users do not need to explicitly provide filenames or revision details.
+
+While this endpoint offers convenience, the long-term objective remains implementing dataset downloading directly through the Hugging Face API:
+
+```text
+https://huggingface.co/{repo_type}s/{repo_id}/resolve/{revision}/{filename}
+```
+
+This approach provides finer revision control and aligns more closely with the design goals of `mlr3hf`.
+
+## Project Objectives
+
+The overall objective is to build a system that balances:
+
+- User friendliness
+- Efficient caching mechanisms
+- Revision-aware dataset management
+- Storage optimisation
+- Smooth integration with the `mlr3` workflow
+
+Building these capabilities in a clean and scalable manner makes the project significantly more challenging than it initially appears.
+
+## Agenda for the Upcoming Two Weeks  
+*(25 May 2026 – 08 June 2026)*
+
+### Planned Development Tasks
+
+- Implement `cache.R`
+- Implement `download_dataset.R`
+- Develop and validate caching logic
+- Test dataset download functionality
