@@ -1,0 +1,84 @@
+---
+title: "finalising design for mlr3hf"
+author: "Anjani Nandan"
+date: "2026-05-29"
+categories: [symlink,fs,revsion,parquet]
+
+---
+
+## Implementing `cache.R` and Dataset Downloading
+
+As we are currently in the first week of GSoC, I started implementing the caching and dataset downloading infrastructure for **mlr3hf**.
+
+The cache system is designed to prevent unnecessary re-downloads while supporting different commits and revisions of a dataset. The implementation is inspired by the Hugging Face cache architecture described in their documentation. The main cache directory is `mlr3hf`, which stores downloaded datasets and metadata in a structured way.
+
+For users who choose the parquet-based workflow, datasets are downloaded from the `refs/convert/parquet` branch.
+
+### Why Parquet?
+
+One of the main reasons for choosing parquet is that it enables us to implement custom resampling strategies similar to those available in `mlr3oml`.
+
+The parquet conversion branch contains datasets already organized into train, validation, and test splits, making it easier to create reproducible machine learning tasks and benchmarks.
+
+### Cache Architecture
+
+To support dataset downloading and caching, I implemented `download_hfhub()` `cache.R` and `download_parquet()`.You can visit my [code](https://github.com/anjaninandan001/mlr3hf). This function downloads and manages files inside a `hub` directory located under the main `mlr3hf` cache folder.
+
+The cache structure contains:
+
+* `blobs`
+* `snapshots`
+* `refs`
+
+This design remains compatible across operating systems. Even when symbolic links are unavailable, files can still be downloaded and accessed correctly.
+
+The implementation follows the general ideas used by Hugging Face Hub while adapting them to the needs of `mlr3hf`.
+
+### Comparison with Python's `load_dataset`
+Downloading component of `mlr3hf` is conceptually similar to Python's `load_dataset()`.
+
+In the Python ecosystem:
+
+* Datasets are cached in dedicated dataset and hub directories.
+* The Hub cache contains structures similar to `blobs`, `snapshots`, and `refs`.
+* Downloaded data is eventually converted into Arrow datasets and then accessed through libraries such as Pandas.
+
+In `mlr3hf`:
+
+* We currently do not support Xet-based storage.
+* Parquet files are downloaded directly into the dataset cache.
+* This approach will integrate naturally with future DuckDB backends, allowing efficient querying and analysis without additional conversion steps.
+
+### Acknowledgements
+
+I would like to thank our mentors, Toby and Sebastian, for their guidance and design discussions.
+
+I also took inspiration from:
+
+* HF Hub a existing package of R [hfhub](https://github.com/mlverse/hfhub)
+* Hugging Face cache management [documentation](https://huggingface.co/docs/huggingface_hub/guides/manage-cache)
+
+### Progress So Far
+
+The following files have been implemented:
+
+* `download_hfhub.R`
+* `download_parquet.R`
+* `cache.R`
+* `defaults.R`
+* `utils.R`
+
+### Next Steps
+
+The next stage of development will focus on implementing:
+
+* `HFData.R`
+* `HFObject.R`
+
+along with their supporting components. These classes will form the core engineering layer of the package.
+
+### Feedback
+
+If anyone have any questions, suggestions, or would like to discuss the design, feel free to contact me at:
+
+**[anjaninandan599@gmail.com](mailto:anjaninandan599@gmail.com)**
