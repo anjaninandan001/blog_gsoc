@@ -1,5 +1,5 @@
 ---
-title: "blog_gsoc: mlr3hf"
+title: "Welcome to my blog"
 listing:
   contents: posts
   feed: true
