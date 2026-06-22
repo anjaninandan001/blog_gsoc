@@ -64,7 +64,8 @@ The following files have been implemented:
 
 * `download_hfhub.R`
 * `download_parquet.R`
-* `cache.R`
+* `cache_paruet.R`
+* `cache_hfhub.R`
 * `defaults.R`
 * `utils.R`
 
