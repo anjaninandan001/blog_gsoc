@@ -1,0 +1,86 @@
+---
+title: "GSoC 2026 Update: Progress Through Week 5"
+author: "Anjani Nandan"
+date: "2026-06-24"
+categories: [gsoc, mlr3hf, caching, symlink, parquet]
+
+---
+
+
+## Overview
+
+I am currently in Week 5 of Google Summer of Code 2026, working on the **mlr3hf** project. The objective of this project is to make datasets hosted on Hugging Face Hub easily accessible within the mlr3 ecosystem.
+
+Over the past five weeks, I have focused on building the core infrastructure required for dataset discovery, downloading, caching, and metadata management.
+
+## Completed Work
+
+The following components have been implemented and are currently functional:
+
+* `cache_parquet.R`
+* `cache_hfhub.R`
+* `defaults.R`
+* `download_desc.R`
+* `list_datasets.R`
+
+These functions provide the foundation for efficiently accessing and managing datasets from Hugging Face Hub.
+
+## Acknowledgements
+
+I would like to thank Sebastian Fischer and Toby Hocking for their continuous support, guidance, and valuable feedback throughout the project.And I look forward to continuing this collaboration during the remainder of GSoC.
+
+## Hugging Face Inspired Caching System
+
+One of the major milestones achieved so far is the implementation of a caching system inspired by the Hugging Face Hub architecture.
+
+The cache follows a structure similar to Hugging Face's caching mechanism:
+
+* **Blobs** store the actual file contents.
+* **Snapshots** represent a specific dataset revision.
+* **Symlink** connect snapshots and blob without duplicating data.
+
+This design allows multiple revisions of the same dataset to coexist locally while minimizing storage requirements.
+
+Currently, users can:
+
+* Download datasets directly from Hugging Face Hub.
+* Access datasets from specific revisions or commit hashes.
+* Work with public, gated, and private datasets (with appropriate authentication).
+* Reuse previously downloaded files through the cache, avoiding unnecessary downloads.
+
+
+## Future Work: Task Creation and Data Backends
+
+With the caching infrastructure in place, the next phase of development will focus on creating mlr3 tasks from downloaded datasets.
+
+### Parquet Datasets
+
+For datasets available in Parquet format, I plan to explore integration with **NanoParquet**.
+
+Hugging Face automatically converts uploaded datasets into Parquet format and stores them under the `refs/convert/parquet` branch. Leveraging these Parquet files should provide an efficient pathway for loading large datasets into mlr3.
+
+### Canonical Dataset Formats
+
+In addition to Parquet support, canonical dataset also be supported via data.table:
+
+* CSV
+* TSV
+* Other text formats
+
+For these datasets, I intend to use `DataBackendDataTable`, ensuring compatibility with existing mlr3 workflows.
+
+## Upcoming Milestones
+
+The major goals for the coming weeks are:
+
+1. Explore and integrate NanoParquet for Parquet-based datasets.
+2. Implement task creation workflows.
+3. Automatically select suitable backends based on dataset format.
+4. Expand documentation and test coverage.
+5. Improve interoperability with the broader mlr3 ecosystem.
+
+## Conclusion
+
+At this stage, the project has reached a stable foundation. The core dataset discovery, downloading, and caching infrastructure is now in place. The next phase will focus on transforming cached datasets into fully functional mlr3 tasks with efficient backend support.
+
+I am excited to continue development and share further updates as the project progresses.
