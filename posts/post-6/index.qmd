@@ -1,0 +1,198 @@
+---
+title: "Building mlr3hf: Downloading and Exploring Hugging Face Datasets"
+author: "Anjani Nandan"
+date: "2026-07-01"
+categories: [gsoc, mlr3hf, caching, symlink, parquet]
+---
+
+The `mlr3hf` package is currently under active development. Its goal is to make Hugging Face datasets easily accessible within the `mlr3` ecosystem. Although the package is not yet complete, several core components have already been implemented.
+
+In this post, I introduce some of the current functionality, including downloading datasets, caching them locally, listing available datasets, and retrieving repository metadata. The examples below demonstrate the current development API, which may evolve before the first stable release.
+
+## `cache_parquet.R`
+
+Many datasets on Hugging Face are available through the `refs/convert/parquet` branch, which contains automatically generated Parquet files. Since Parquet is an efficient storage format and integrates well with analytical backends, `mlr3hf` downloads datasets from this branch whenever possible.
+
+The `cache_parquet()` function downloads Parquet datasets and stores them in the local cache. It currently exposes the following arguments:
+
+* `repo_id`
+* `config`
+* `revision`
+* `split`
+
+If `revision` is not specified, the latest version of the dataset is downloaded. To reproduce an older version of a dataset, simply provide the corresponding commit hash through the `revision` argument.
+
+### Download the latest version
+
+```{r}
+#| eval: false
+
+dataset.latest <- cache_parquet(
+  repo_id = "a4n9i/iris-tabular",
+  config = "default"
+)
+
+dataset.latest
+```
+
+**Expected output**
+
+```text
+$train
+[1] "~/.cache/huggingface/datasets/datasets--a4n9i--iris-tabular/default/train/snapshots/f408ebffc0876b0f284fa4c90453e52e43c67677/0000.parquet"
+```
+
+The returned path points to the cached Parquet file on the local machine.
+
+### Download a specific revision
+
+```{r}
+#| eval: false
+
+dataset.old <- cache_parquet(
+  repo_id = "a4n9i/iris-tabular",
+  config = "default",
+  revision = "d8ba9e5adfa0070361298ae66161ca0b26e78806"
+)
+
+dataset.old
+```
+
+**Expected output**
+
+```text
+$train
+[1] "~/.cache/huggingface/datasets/datasets--a4n9i--iris-tabular/default/train/snapshots/d8ba9e5adfa0070361298ae66161ca0b26e78806/0000.parquet"
+```
+
+Supporting revisions ensures that users can always retrieve a specific version of a dataset, making experiments reproducible.
+
+
+
+## `cache_hfhub.R`
+
+Not every dataset on Hugging Face is available as Parquet. Some repositories contain datasets in their original formats, such as CSV or JSON.
+
+The internal function `cache_hfhub()` downloads these canonical dataset files directly from the Hugging Face Hub. Although this is currently an internal helper function, it provides the foundation for supporting repositories that do not contain Parquet files.
+
+```{r}
+#| eval: false
+
+dataset <- cache_hfhub(
+  repo_id = "a4n9i/iris-tabular",
+  file_name = "iris.csv"
+)
+
+dataset
+```
+
+**Expected output**
+
+```text
+~/.cache/huggingface/hub/datasets--a4n9i--iris-tabular/snapshots/e97efa4eb2e5a170a564aa2d05597c7fc8ac8a4c/iris.csv
+```
+
+Like `cache_parquet()`, this function also supports downloading datasets from different branches or specific commit revisions.
+
+
+
+## `list_datasets.R`
+
+Finding an appropriate dataset is the first step before downloading it.
+
+The `list_datasets()` function retrieves datasets from the Hugging Face Datasets API and returns a summary containing useful information, including:
+
+* Dataset ID
+* Whether the dataset is gated
+* Number of downloads
+
+```{r}
+#| eval: false
+
+dataset_list <- list_datasets(5)
+
+dataset_list
+```
+
+**Expected output**
+
+```text
+                                    id  gated downloads
+                                <char> <char>     <int>
+1:       Glint-Research/Fable-5-traces  FALSE     19185
+2: armand0e/claude-fable-5-claude-code  FALSE      7978
+3:      lazarus19/Vibe-Coding-Instruct  FALSE      1709
+4:                       XDOF/ABC-130k   auto     87103
+5:                  LocalLaws/LOCUS-v1  FALSE      1130
+```
+
+In future versions of `mlr3hf`, I also plan to expose additional metadata such as the number of rows and columns whenever that information is available.
+
+
+
+## `download_desc.R`
+
+Another internal helper function is `download_desc()`, which retrieves repository metadata from Hugging Face.
+
+This information is useful before downloading a dataset because it allows `mlr3hf` to inspect repository properties such as storage size and modification time.
+
+```{r}
+#| eval: false
+
+download_desc("scikit-learn/iris")
+```
+
+**Example output**
+
+```text
+$id
+[1] "scikit-learn/iris"
+
+$author
+[1] "scikit-learn"
+
+$sha
+[1] "0bda0ce801be0fa2f464ff845a9d5ceae99aad7d"
+
+$lastModified
+[1] "2022-06-20T14:17:01.000Z"
+
+$usedStorage
+[1] 5309549
+
+...
+```
+
+Internally, this metadata is used to make smarter download decisions. For example, the repository size can be used to prevent users from accidentally downloading extremely large datasets that may exceed their available storage.
+
+The metadata retrieved by `download_desc()` will also be useful in higher-level classes such as `HFData`, where fields like `$lastModified` can be exposed through active bindings.
+
+
+
+## Current Progress
+
+The following functionality has been implemented so far:
+
+* Downloading datasets from the `refs/convert/parquet` branch.
+* Supporting dataset revisions through commit hashes.
+* Downloading canonical dataset files from the Hugging Face Hub.
+* Caching downloaded datasets locally.
+* Listing datasets available on Hugging Face.
+* Retrieving repository metadata for smarter download management.
+
+## Future Work
+
+The next major milestones for `mlr3hf` are:
+
+* Implementing the `mlr3` backend for Hugging Face datasets.
+* Creating `mlr3` Tasks directly from the downloaded datasets.
+* Exposing richer dataset metadata, including the number of rows and columns.
+* Continuing to improve the caching and download infrastructure.
+
+## Acknowledgements
+
+I would like to thank my mentors, **Toby Hocking** and **Sebastian Fischer**, for their continuous guidance throughout the development of `mlr3hf`.
+
+Many of the features described in this post began as rough or incomplete ideas. Before implementing them, I regularly discussed the design, API, and overall approach with my mentors. Their feedback helped me better understand the problem, refine the implementation, and make design decisions that aligned with the goals of the project.
+
+I am grateful for their patience, insightful discussions, and constructive suggestions, which have been invaluable in shaping the package. Looking forward to work more with the mentor.
